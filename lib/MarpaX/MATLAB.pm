@@ -15,9 +15,10 @@ my $grammar = Marpa::R2::Scanless::G->new(
         source         => \(<<'END_OF_SOURCE'),
 :start ::= Top
 
-Top ::= Expression+
+Top ::=  Statement+
 
-Expression ::= Term
+Statement ::= Expression Semicolon
+            | Expression Newline
 
 Expression ::=
 	   Number
@@ -76,6 +77,9 @@ optional_digits ~ # empty
 digits ~ [\d]+
 
 decimal ~ [.]
+
+Semicolon ~ [;]
+Newline ~ [\n]
 
 :discard ~ whitespace
 whitespace ~ [\s]+
