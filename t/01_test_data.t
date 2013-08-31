@@ -2,47 +2,58 @@ use Test::Most;
 use Test::Base;
 use Path::Class;
 use Path::Iterator::Rule;
+use List::AllUtils qw(sum);
 use strict;
 
 use MarpaX::MATLAB;
 
 my $testbase = Test::Base->new;
-delimiters('%==', '%--');
-my $spec = file(__FILE__)->dir->subdir('data')->file('00_number.m');
-spec_file($spec);
+#my $spec = file(__FILE__)->dir->subdir('data')->file('00_number.m');
 
-filters {
-    input  => [qw(chomp)],
-    success  => [qw(chomp)],
-};
+my @spec_files = Path::Iterator::Rule->new->file->name(qr/\.m$/)->all(
+	file(__FILE__)->dir->subdir('data') );
+my @test = map {
+	my $test = Test::Base->new();
+	$test->delimiters('%==', '%--');
+	$test->spec_file($_);
+	$test->filters({
+	    input  => [qw(chomp)],
+	    success  => [qw(chomp)],
+	});
+	$test;
+} @spec_files;
 
-plan tests => ( 1 * blocks );
+
+plan tests => ( sum map { $_->blocks } @test );
 
 my $grammar = MarpaX::MATLAB->grammar;
 
-run {
-	my $block = shift;
-	my $input = $block->input;
-	my $success = !! ( $block->success ); # booleanify
-	my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
-	my ($value, $value_ref);
-	eval {
-		$recce->read( \$input );
-		$value_ref = $recce->value;
-		$value = $value_ref ? ${$value_ref} : 'No Parse';
-	};
-	unless( $@ ) {
-		# parse successful
-		if($success) {
-			pass "< $input > parsed";
+for my $t (@test) {
+	note "running test on @{[$t->{_spec_file}]}";
+	$t->run( sub {
+		my $block = shift;
+		my $input = $block->input;
+		my $success = !! ( $block->success ); # booleanify
+		my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
+		my ($value, $value_ref);
+		eval {
+			$recce->read( \$input );
+			$value_ref = $recce->value;
+			$value = $value_ref ? ${$value_ref} : 'No Parse';
+		};
+		unless( $@ ) {
+			# parse successful
+			if($success) {
+				pass "< $input > parsed";
+			} else {
+				fail '< $input > was not supposed to parse';
+			}
 		} else {
-			fail '< $input > was not supposed to parse';
+			if($success) {
+				fail "< $input > did not parse";
+			} else {
+				pass "< $input > should not parse";
+			}
 		}
-	} else {
-		if($success) {
-			fail "< $input > did not parse";
-		} else {
-			pass "< $input > should not parse";
-		}
-	}
+	});
 }
