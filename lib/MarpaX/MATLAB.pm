@@ -19,8 +19,26 @@ Top ::= Expression+
 
 Expression ::= Term
 
-Term ::= Number
-	| Optional_Unary_Sign Number
+Expression ::=
+	   Number
+	 | Op_lparen Expression Op_rparen assoc => group
+	|| Expression Op_starstar Expression  assoc => right
+	|| Optional_Unary_Sign Number
+	|| Expression Op_star Expression
+	 | Expression Op_slash Expression
+	|| Expression Op_plus Expression
+	 | Expression Op_minus Expression
+
+
+
+Op_lparen ~ [(]
+Op_rparen ~ [)]
+
+Op_starstar ~ [*][*]
+Op_plus ~ [+]
+Op_minus ~ [-]
+Op_star ~ [*]
+Op_slash ~ [/]
 
 Unary_Sign ~ [+-]
 
