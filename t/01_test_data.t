@@ -24,7 +24,7 @@ my @test = map {
 } @spec_files;
 
 
-plan tests => ( sum map { $_->blocks } @test );
+plan tests => ( sum ( map { 1 * $_->blocks } @test ) );
 
 my $grammar = MarpaX::MATLAB->grammar;
 
