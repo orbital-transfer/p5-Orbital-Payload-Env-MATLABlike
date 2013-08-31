@@ -19,12 +19,13 @@ Top ::=  Statement+
 
 Statement ::= Expression Semicolon
             | Expression Newline
+            | Expression
 
 Expression ::=
 	   Number
 	 | Op_lparen Expression Op_rparen assoc => group
-	|| Expression Op_starstar Expression  assoc => right
-	|| Optional_Unary_Sign Number
+	|| Expression Op_caret Expression  assoc => right
+	|| Unary_Sign Number
 	|| Expression Op_star Expression
 	 | Expression Op_slash Expression
 	|| Expression Op_plus Expression
@@ -35,7 +36,8 @@ Expression ::=
 Op_lparen ~ [(]
 Op_rparen ~ [)]
 
-Op_starstar ~ [*][*]
+# Op_starstar ~ [*][*] # Octave supports ** for exponentiation, but MATLAB does not
+Op_caret ~ [\^]
 Op_plus ~ [+]
 Op_minus ~ [-]
 Op_star ~ [*]
@@ -43,8 +45,8 @@ Op_slash ~ [/]
 
 Unary_Sign ~ [+-]
 
-Optional_Unary_Sign ~ Unary_Sign
-Optional_Unary_Sign ~ # empty
+#Optional_Unary_Sign ~ Unary_Sign
+#Optional_Unary_Sign ~ # empty
 
 Number ~ RealNumber | ImaginaryNumber
 
