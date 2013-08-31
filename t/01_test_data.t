@@ -36,14 +36,11 @@ for my $t (@test) {
 		my $success = !! ( $block->success ); # booleanify
 		my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
 		my ($value, $value_ref);
-		eval {
-			$recce->read( \$input );
+		unless( not defined eval { $recce->read( \$input ); 1 } ) {
+			# parse successful
 			$value_ref = $recce->value;
 			$value = $value_ref ? ${$value_ref} : 'No Parse';
-		};
-		unless( $@ ) {
-			# parse successful
-			if($success) {
+			if($success and $value_ref) {
 				pass "< $input > parsed";
 			} else {
 				fail '< $input > was not supposed to parse';
