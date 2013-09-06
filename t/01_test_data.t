@@ -18,7 +18,7 @@ my @test = map {
 	$test->spec_file($_);
 	$test->filters({
 	    input  => [qw(chomp)],
-	    success  => [qw(chomp)],
+	    success  => [qw(remove_matlab_comments chomp)],
 	});
 	$test;
 } @spec_files;
@@ -33,7 +33,7 @@ for my $t (@test) {
 	$t->run( sub {
 		my $block = shift;
 		my $input = $block->input;
-		my $success = !! ( $block->success ); # booleanify
+		my $success =  $block->success == 1 ; # booleanify
 		my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
 		my ($value, $value_ref);
 		unless( not defined eval { $recce->read( \$input ); 1 } ) {
@@ -53,4 +53,8 @@ for my $t (@test) {
 			}
 		}
 	});
+}
+
+sub remove_matlab_comments {
+	s/^% //gm;
 }
