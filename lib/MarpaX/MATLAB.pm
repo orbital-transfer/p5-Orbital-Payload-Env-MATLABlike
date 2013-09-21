@@ -15,11 +15,20 @@ my $grammar = Marpa::R2::Scanless::G->new(
         source         => \(<<'END_OF_SOURCE'),
 :start ::= Top
 
-Top ::=  Statement+
+Top ::=
+	  Script_file
+	| Function_file
+
+Script_file ::= Statement+
+
+Function_file ::= Statement+
 
 Statement ::= Expression Semicolon
             | Expression Newline
             | Expression
+
+
+kw_For ~ "for"
 
 Expression ::=
 	   Number
