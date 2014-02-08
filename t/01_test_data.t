@@ -43,13 +43,13 @@ for my $t (@test) {
 			if($success and $value_ref) {
 				pass "< $input > parsed";
 			} else {
-				fail '< $input > was not supposed to parse';
+				fail '< $input > should not have parsed';
 			}
 		} else {
 			if($success) {
-				fail "< $input > did not parse";
+				fail "< $input > should have parsed";
 			} else {
-				pass "< $input > should not parse";
+				pass "< $input > did not parse";
 			}
 		}
 	});
