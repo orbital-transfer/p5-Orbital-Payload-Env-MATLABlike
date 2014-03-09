@@ -32,7 +32,7 @@ for my $t (@test) {
 	note "running test on @{[$t->{_spec_file}]}";
 	$t->run( sub {
 		my $block = shift;
-		my $input = $block->input;
+		my $input = $block->input . "\n"; # ensure a new line at the end
 		my $success =  $block->success == 1 ; # booleanify
 		my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
 		my ($value, $value_ref);
@@ -43,7 +43,7 @@ for my $t (@test) {
 			if($success and $value_ref) {
 				pass "< $input > parsed";
 			} else {
-				fail '< $input > should not have parsed';
+				fail "< $input > should not have parsed";
 			}
 		} else {
 			if($success) {
