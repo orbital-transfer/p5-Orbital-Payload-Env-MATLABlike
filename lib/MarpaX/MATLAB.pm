@@ -23,10 +23,11 @@ Script_file ::= Statement+
 Function_file ::= Statement+
 
 Statement ::=
-	  Expression Semicolon
-	| Expression Newline
-	| Expression
+	  Expression Statement_Sep
+	| identifier Op_assign Expression Statement_Sep
 	| Keyword
+
+Statement_Sep ~ Semicolon | Newline
 
 Keyword ::=
 	  kw_For
@@ -78,6 +79,7 @@ Expression ::=
 
 
 
+
 Op_lparen ~ [(]
 Op_rparen ~ [)]
 
@@ -87,6 +89,8 @@ Op_plus ~ [+]
 Op_minus ~ [-]
 Op_star ~ [*]
 Op_slash ~ [/]
+
+Op_assign ~ [=]
 
 Unary_Sign ~ [+-]
 
@@ -128,6 +132,10 @@ decimal ~ [.]
 Semicolon ~ [;]
 Newline ~ [\n]
 
+identifier ~ [a-zA-Z] id_rest
+id_rest    ~ [_a-zA-Z0-9]*
+
+
 :discard ~ whitespace
 whitespace ~ [\s]+
 END_OF_SOURCE
@@ -151,3 +159,18 @@ sub My_Nodes::do_multiply {
 }
 
 1;
+# ABSTRACT: Grammar for the MATLAB language.
+
+=pod
+
+=head1 SYNOPSIS
+
+  use My::Package; # TODO
+
+  print My::Package->new;
+
+=head1 DESCRIPTION
+
+TODO
+
+=cut
