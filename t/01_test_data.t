@@ -40,8 +40,12 @@ for my $t (@test) {
 			# parse successful
 			$value_ref = $recce->value;
 			$value = $value_ref ? ${$value_ref} : 'No Parse';
-			if($success and $value_ref) {
-				pass "< $input > parsed";
+			if($success) {
+				if( defined $value_ref ) {
+					pass "< $input > parsed";
+				} else {
+					fail "< $input > parsed, but did not generate tree";
+				}
 			} else {
 				fail "< $input > should not have parsed";
 			}

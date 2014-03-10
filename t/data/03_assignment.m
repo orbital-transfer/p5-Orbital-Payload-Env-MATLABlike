@@ -15,3 +15,18 @@ b = 1
 _b = 1
 %-- success
 % 0
+%==
+%-- input
+b = 1, 1
+%-- success
+% 1
+%==
+%-- input
+b = 1; 1
+%-- success
+% 1
+%==
+%-- input
+b = 1; a = 2;
+%-- success
+% 1

@@ -46,3 +46,19 @@
 1 + 1 1 + 1
 %-- success
 % 0
+%==
+%-- input
+1 , 1,
+1;
+%-- success
+% 1
+%==
+%-- input
+1 , 1;
+%-- success
+% 1
+%==
+%-- input
+1 ; 1;
+%-- success
+% 1

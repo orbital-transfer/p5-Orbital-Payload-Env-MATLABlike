@@ -24,10 +24,8 @@ Function_file ::= Statement+
 
 Statement ::=
 	  Expression Statement_Sep
-	| identifier Op_assign Expression Statement_Sep
+	| identifier Op_assign Expression Statement_Sep  # assignment
 	| Keyword
-
-Statement_Sep ~ Semicolon | Newline
 
 Keyword ::=
 	  kw_For
@@ -76,9 +74,22 @@ Expression ::=
 	 | Expression Op_slash Expression
 	|| Expression Op_plus Expression
 	 | Expression Op_minus Expression
+	 | Expression Op_colon Expression 
+	 | Expression Op_colon Expression Op_colon Expression
+	|| Indexing
 
+Indexing ::=
+	identifier Op_lparen Indexing_Expression_with_comma_sep Op_rparen Statement_Sep
 
+Indexing_Expression ::=
+	  Expression
+	| Op_colon
 
+Indexing_Expression_with_comma_sep ::=
+	  Indexing_Expression
+	| Indexing_Expression Op_Comma Indexing_Expression_with_comma_sep
+
+Op_Comma ::= [,]
 
 Op_lparen ~ [(]
 Op_rparen ~ [)]
@@ -89,6 +100,7 @@ Op_plus ~ [+]
 Op_minus ~ [-]
 Op_star ~ [*]
 Op_slash ~ [/]
+Op_colon ~ [:]
 
 Op_assign ~ [=]
 
@@ -104,7 +116,8 @@ RealNumber ~ Integer | Float
 Optional_RealNumber ~ RealNumber
 Optional_RealNumber ~ # empty
 
-ImaginaryNumber ~ Optional_RealNumber [ij]
+ImaginaryNumber ~ Optional_RealNumber ImaginaryUnit
+ImaginaryUnit ~  [ij]
 
 Integer ~ digits
 
@@ -135,6 +148,9 @@ Newline ~ [\n]
 identifier ~ [a-zA-Z] id_rest
 id_rest    ~ [_a-zA-Z0-9]*
 
+
+Statement_Sep ~ Semicolon | Comma | Newline
+Comma ~ [,]
 
 :discard ~ whitespace
 whitespace ~ [\s]+
