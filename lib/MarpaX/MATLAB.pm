@@ -24,7 +24,7 @@ Function_file ::= Statement+
 
 Statement ::=
 	  Expression Statement_Sep
-	| identifier Op_assign Expression Statement_Sep  # assignment
+	| identifier Op_assign Expression Statement_Sep  # assignment (NOTE: is not an expression)
 	| Keyword
 
 Keyword ::=
@@ -65,19 +65,38 @@ kw_Persistent ~ 'persistent'
 kw_Break      ~ 'break'
 
 
+# precedence from <http://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html>
 Expression ::=
 	   Number
 	 | identifier
 	 | Indexing
 	 | Op_lparen Expression Op_rparen assoc => group
-	|| Expression Op_caret Expression  assoc => right
-	|| Unary_Sign Number
-	|| Expression Op_star Expression
-	 | Expression Op_slash Expression
-	|| Expression Op_plus Expression
+	|| Expression Op_mpower Expression   assoc => left
+	 | Expression Op_epower Expression
+	 | Expression Op_transpose
+	 | Expression Op_ctranspose
+	|| Op_not Number
+	 | Unary_Sign Number
+	|| Expression Op_mmult Expression    assoc => left
+	 | Expression Op_emult Expression
+	 | Expression Op_mdiv Expression
+	 | Expression Op_ediv Expression
+	 | Expression Op_mldiv Expression
+	 | Expression Op_eldiv Expression
+	|| Expression Op_plus Expression    assoc => left
 	 | Expression Op_minus Expression
-	 | Expression Op_colon Expression 
+	|| Expression Op_colon Expression 
 	 | Expression Op_colon Expression Op_colon Expression
+	|| Expression Op_lt Expression      assoc => left
+	 | Expression Op_le Expression
+	 | Expression Op_gt Expression
+	 | Expression Op_ge Expression
+	 | Expression Op_eq Expression
+	 | Expression Op_ne Expression
+	|| Expression Op_eand Expression
+	|| Expression Op_eor Expression
+	|| Expression Op_sand Expression
+	|| Expression Op_sor Expression
 
 # indexing and function calls are the same at parse-time
 Indexing ::=
@@ -97,12 +116,33 @@ Op_lparen ~ [(]
 Op_rparen ~ [)]
 
 # Op_starstar ~ [*][*] # Octave supports ** for exponentiation, but MATLAB does not
-Op_caret ~ [\^]
+Op_mpower ~ [\^]
+Op_epower ~ [.][\^]
+Op_ctranspose ~ [']
+Op_transpose ~ [.][']
 Op_plus ~ [+]
 Op_minus ~ [-]
-Op_star ~ [*]
-Op_slash ~ [/]
+Op_mmult ~ [*]
+Op_emult ~ [.][*]
+Op_mdiv ~ [/]
+Op_ediv ~ [.][/]
+Op_mldiv ~ [\\]
+Op_eldiv ~ [.][\\]
 Op_colon ~ [:]
+
+Op_lt ~ [<]
+Op_le ~ [<][=]
+Op_gt ~ [>]
+Op_ge ~ [>][=]
+Op_eq ~ [=][=]
+Op_ne ~ [~][=]
+
+Op_eand ~ [&]
+Op_eor ~ [|]
+Op_sand ~ [&][&]
+Op_sor ~ [|][|]
+
+Op_not ~ [~]
 
 Op_assign ~ [=]
 
