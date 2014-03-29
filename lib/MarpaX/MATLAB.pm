@@ -67,6 +67,7 @@ kw_Break      ~ 'break'
 
 Expression ::=
 	   Number
+	 | Indexing
 	 | Op_lparen Expression Op_rparen assoc => group
 	|| Expression Op_caret Expression  assoc => right
 	|| Unary_Sign Number
@@ -76,7 +77,6 @@ Expression ::=
 	 | Expression Op_minus Expression
 	 | Expression Op_colon Expression 
 	 | Expression Op_colon Expression Op_colon Expression
-	|| Indexing
 
 Indexing ::=
 	identifier Op_lparen Indexing_Expression_with_comma_sep Op_rparen Statement_Sep
