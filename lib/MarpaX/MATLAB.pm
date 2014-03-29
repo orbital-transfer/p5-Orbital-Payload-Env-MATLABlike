@@ -67,6 +67,7 @@ kw_Break      ~ 'break'
 
 Expression ::=
 	   Number
+	 | identifier
 	 | Indexing
 	 | Op_lparen Expression Op_rparen assoc => group
 	|| Expression Op_caret Expression  assoc => right
@@ -78,8 +79,9 @@ Expression ::=
 	 | Expression Op_colon Expression 
 	 | Expression Op_colon Expression Op_colon Expression
 
+# indexing and function calls are the same at parse-time
 Indexing ::=
-	identifier Op_lparen Indexing_Expression_with_comma_sep Op_rparen Statement_Sep
+	identifier Op_lparen Indexing_Expression_with_comma_sep Op_rparen
 
 Indexing_Expression ::=
 	  Expression
