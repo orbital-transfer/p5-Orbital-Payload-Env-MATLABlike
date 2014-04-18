@@ -25,6 +25,7 @@ Function_file ::= Statement+
 Statement ::=
 	  Expression Statement_Sep
 	| identifier Op_assign Expression Statement_Sep  # assignment (NOTE: is not an expression)
+	| If_block
 	| Keyword
 
 Keyword ::=
@@ -45,6 +46,12 @@ Keyword ::=
 	| kw_Global
 	| kw_Persistent
 	| kw_Break
+
+If_block ::= kw_If Expression Statement+ Else_block kw_End
+
+Else_block ::= # empty
+	| kw_Else Statement+
+	| kw_Elseif Expression Statment+
 
 kw_For        ~ 'for'
 kw_End        ~ 'end'
