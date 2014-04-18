@@ -18,15 +18,23 @@ Top ::=
 	  Script_file
 	| Function_file
 
-Script_file ::= Statement+
+Script_file ::= Statement_list
 
-Function_file ::= Statement+
+Function_file ::= Statement_list
 
 Statement ::=
-	  Expression Statement_Sep
-	| identifier Op_assign Expression Statement_Sep  # assignment (NOTE: is not an expression)
+	  Expression
+	| identifier Op_assign Expression  # assignment (NOTE: is not an expression)
 	| If_block
 	| Keyword
+
+Statement_list ::= Statement opt_delimiter
+	| Statement delimiter Statement_list
+
+delimiter ::= Statement_Sep+
+opt_delimiter ::= # empty
+opt_delimiter ::= delimiter
+
 
 Keyword ::=
 	  kw_For
@@ -47,11 +55,14 @@ Keyword ::=
 	| kw_Persistent
 	| kw_Break
 
-If_block ::= kw_If Expression Statement+ Else_block kw_End
+If_block ::= kw_If Expression Statement_list Opt_Else_block kw_End
 
-Else_block ::= # empty
-	| kw_Else Statement+
-	| kw_Elseif Expression Statment+
+Opt_Else_block ::= # empty
+Opt_Else_block ::= Else_block
+
+Else_block ::=
+	  kw_Else Statement_list
+	| kw_Elseif Expression Statement_list
 
 kw_For        ~ 'for'
 kw_End        ~ 'end'
@@ -192,6 +203,7 @@ digits ~ [\d]+
 decimal ~ [.]
 
 Semicolon ~ [;]
+Comma ~ [,]
 Newline ~ [\n]
 
 identifier ~ [a-zA-Z] id_rest
@@ -199,7 +211,6 @@ id_rest    ~ [_a-zA-Z0-9]*
 
 
 Statement_Sep ~ Semicolon | Comma | Newline
-Comma ~ [,]
 
 :discard ~ whitespace
 whitespace ~ [\s]+
