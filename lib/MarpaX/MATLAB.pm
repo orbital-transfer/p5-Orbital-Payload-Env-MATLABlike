@@ -64,6 +64,8 @@ Else_block ::=
 	  kw_Else Statement_list
 	| kw_Elseif Expression Statement_list
 
+While_block ::= kw_While Expression Statement_list kw_End
+
 kw_For        ~ 'for'
 kw_End        ~ 'end'
 kw_If         ~ 'if'

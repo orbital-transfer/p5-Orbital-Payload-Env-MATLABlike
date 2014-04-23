@@ -25,3 +25,10 @@ elseif a == 0
 end
 %-- success
 % 1
+%==
+%-- input
+while a == 1
+	a = 2
+end
+%-- success
+% 1
