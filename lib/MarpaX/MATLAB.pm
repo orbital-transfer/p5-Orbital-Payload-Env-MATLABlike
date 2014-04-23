@@ -26,6 +26,7 @@ Statement ::=
 	  Expression
 	| identifier Op_assign Expression  # assignment (NOTE: is not an expression)
 	| If_block
+	| While_block
 	| Keyword
 
 Statement_list ::= Statement opt_delimiter
