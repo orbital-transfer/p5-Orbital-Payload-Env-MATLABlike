@@ -4,7 +4,7 @@
 
 =head1 NAME
 
-MarpaX::MATLAB - Grammar for the MATLAB language.
+Language::MATLAB::AST - Grammar for the MATLAB language.
 
 =head1 VERSION
 

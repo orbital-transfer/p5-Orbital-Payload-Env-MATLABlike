@@ -1,4 +1,4 @@
-package MarpaX::MATLAB;
+package Language::MATLAB::AST;
 
 use strict;
 use warnings;

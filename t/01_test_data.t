@@ -5,7 +5,7 @@ use Path::Iterator::Rule;
 use List::AllUtils qw(sum);
 use strict;
 
-use MarpaX::MATLAB;
+use Language::MATLAB::AST;
 
 my $testbase = Test::Base->new;
 #my $spec = file(__FILE__)->dir->subdir('data')->file('00_number.m');
@@ -26,7 +26,7 @@ my @test = map {
 
 plan tests => ( sum ( map { 1 * $_->blocks } @test ) );
 
-my $grammar = MarpaX::MATLAB->grammar;
+my $grammar = Language::MATLAB::AST->grammar;
 
 for my $t (@test) {
 	note "running test on @{[$t->{_spec_file}]}";
