@@ -9,10 +9,13 @@ sub grammar {
 my $grammar = Marpa::R2::Scanless::G->new(
     {   action_object  => 'My_Nodes',
 	#default_action => '::first',
-	default_action => '::array',
+	#default_action => '::array',
+	default_action => ['name', 'value'],
 	source         => \(<<'END_OF_SOURCE'),
 
 :start ::= Top
+
+lexeme default = action => [ name, value ]
 
 Top ::=
 	  Script_file
@@ -28,8 +31,9 @@ Statement ::=
 	| If_block
 	| While_block
 
-Statement_list ::= Statement opt_delimiter
-	| Statement delimiter Statement_list
+Statement_delim ::= Statement delimiter
+
+Statement_list ::=  Statement_delim+
 
 delimiter ::= Statement_Sep+
 opt_delimiter ::= # empty
@@ -55,14 +59,15 @@ Keyword ::=
 	| kw_Persistent
 	| kw_Break
 
-If_block ::= kw_If Expression Statement_list Opt_Else_block kw_End
+If_block ::= kw_If Expression delimiter Statement_list kw_End
+If_block ::= kw_If Expression delimiter Statement_list Else_block kw_End
+If_block ::= kw_If Expression delimiter Statement_list Elseif_block kw_End
 
 Opt_Else_block ::= # empty
 Opt_Else_block ::= Else_block
 
-Else_block ::=
-	  kw_Else Statement_list
-	| kw_Elseif Expression Statement_list
+Else_block ::= kw_Else Statement_list
+Elseif_block ::= kw_Elseif Expression delimiter Statement_list
 
 While_block ::= kw_While Expression Statement_list kw_End
 

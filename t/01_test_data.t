@@ -40,6 +40,7 @@ for my $t (@test) {
 			# parse successful
 			$value_ref = $recce->value;
 			$value = $value_ref ? ${$value_ref} : 'No Parse';
+			#use DDP; p $value;
 			if($success) {
 				if( defined $value_ref ) {
 					pass "< $input > parsed";
