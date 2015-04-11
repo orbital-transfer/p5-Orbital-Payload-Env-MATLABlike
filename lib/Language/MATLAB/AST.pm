@@ -30,6 +30,7 @@ Statement ::=
 	| identifier Op_assign Expression  # assignment (NOTE: is not an expression)
 	| If_block
 	| While_block
+	| For_block
 
 Statement_delim ::= Statement delimiter
 
@@ -70,6 +71,8 @@ Else_block ::= kw_Else Statement_list
 Elseif_block ::= kw_Elseif Expression delimiter Statement_list
 
 While_block ::= kw_While Expression Statement_list kw_End
+
+For_block ::= kw_For Expression Statement_list kw_End
 
 kw_For        ~ 'for'
 kw_End        ~ 'end'
