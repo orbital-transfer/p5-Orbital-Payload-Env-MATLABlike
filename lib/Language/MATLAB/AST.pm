@@ -31,6 +31,7 @@ Statement ::=
 	| If_block
 	| While_block
 	| For_block
+	| Function_block
 
 Statement_delim ::= Statement delimiter
 
@@ -73,6 +74,8 @@ Elseif_block ::= kw_Elseif Expression delimiter Statement_list
 While_block ::= kw_While Expression Statement_list kw_End
 
 For_block ::= kw_For Expression Statement_list kw_End
+
+Function_block ::= Func_Return kw_Function Func_Arg Statement_list kw_End
 
 kw_For        ~ 'for'
 kw_End        ~ 'end'
