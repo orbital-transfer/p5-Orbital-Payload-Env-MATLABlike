@@ -32,6 +32,7 @@ Statement ::=
 	| While_block
 	| For_block
 	| Function_block
+	| Try_block
 
 Statement_delim ::= Statement delimiter
 
@@ -76,6 +77,11 @@ While_block ::= kw_While Expression Statement_list kw_End
 For_block ::= kw_For Expression Statement_list kw_End
 
 Function_block ::= Func_Return kw_Function Func_Arg Statement_list kw_End
+
+Try_block ::= kw_Try Statement_list catch Opt_Exception_Object Statement_list kw_End
+
+Opt_Exception_Object ::= # empty
+Opt_Exception_Object ::= identifier
 
 kw_For        ~ 'for'
 kw_End        ~ 'end'
