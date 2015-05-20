@@ -45,14 +45,14 @@ for my $t (@test) {
 				if( defined $value_ref ) {
 					pass "< $input > parsed";
 				} else {
-					fail "< $input > parsed, but did not generate tree";
+					fail "< $input > parsed, but did not generate tree" or diag explain $value;
 				}
 			} else {
-				fail "< $input > should not have parsed";
+				fail "< $input > should not have parsed" or diag explain $value;
 			}
 		} else {
 			if($success) {
-				fail "< $input > should have parsed";
+				fail "< $input > should have parsed" or diag explain $value;
 			} else {
 				pass "< $input > did not parse";
 			}
