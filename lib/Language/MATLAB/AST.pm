@@ -7,10 +7,10 @@ use Marpa::R2;
 
 sub grammar {
 my $grammar = Marpa::R2::Scanless::G->new(
-    {   action_object  => 'My_Nodes',
+    {   #action_object  => 'My_Nodes',
 	#default_action => '::first',
-	#default_action => '::array',
-	default_action => ['name', 'value'],
+	default_action => '::array',
+	#default_action => ['name', 'value'],
 	source         => \(<<'END_OF_SOURCE'),
 
 :start ::= Top
@@ -33,14 +33,13 @@ Statement ::=
 	| For_block
 	| Function_block
 	| Try_block
+	| Keyword
 
 Statement_delim ::= Statement delimiter
 
 Statement_list ::=  Statement_delim+
 
 delimiter ::= Statement_Sep+
-opt_delimiter ::= # empty
-opt_delimiter ::= delimiter
 
 
 Keyword ::=
@@ -66,19 +65,20 @@ If_block ::= kw_If Expression delimiter Statement_list kw_End
 If_block ::= kw_If Expression delimiter Statement_list Else_block kw_End
 If_block ::= kw_If Expression delimiter Statement_list Elseif_block kw_End
 
-Opt_Else_block ::= # empty
-Opt_Else_block ::= Else_block
-
 Else_block ::= kw_Else Statement_list
 Elseif_block ::= kw_Elseif Expression delimiter Statement_list
 
-While_block ::= kw_While Expression Statement_list kw_End
+While_block ::= kw_While Expression delimiter Statement_list kw_End
 
 For_block ::= kw_For Expression Statement_list kw_End
 
 Function_block ::= Func_Return kw_Function Func_Arg Statement_list kw_End
 
-Try_block ::= kw_Try Statement_list catch Opt_Exception_Object Statement_list kw_End
+Func_Return ::= # TODO
+
+Func_Arg ::= # TODO
+
+Try_block ::= kw_Try Statement_list kw_Catch Opt_Exception_Object Statement_list kw_End
 
 Opt_Exception_Object ::= # empty
 Opt_Exception_Object ::= identifier
@@ -232,7 +232,7 @@ id_rest    ~ [_a-zA-Z0-9]*
 Statement_Sep ~ Semicolon | Comma | Newline
 
 :discard ~ whitespace
-whitespace ~ [\s]+
+whitespace ~ [ \t]+
 END_OF_SOURCE
     }
 );
