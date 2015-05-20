@@ -17,13 +17,7 @@ my $grammar = Marpa::R2::Scanless::G->new(
 
 lexeme default = action => [ name, value ]
 
-Top ::=
-	  Script_file
-	| Function_file
-
-Script_file ::= Statement_list
-
-Function_file ::= Statement_list
+Top ::= Statement_block
 
 Statement ::=
 	  Expression
@@ -33,11 +27,10 @@ Statement ::=
 	| For_block
 	| Function_block
 	| Try_block
-	| Keyword
 
 Statement_delim ::= Statement delimiter
 
-Statement_list ::=  Statement_delim+
+Statement_block ::=  Statement_delim+
 
 delimiter ::= Statement_Sep+
 
@@ -61,24 +54,24 @@ Keyword ::=
 	| kw_Persistent
 	| kw_Break
 
-If_block ::= kw_If Expression delimiter Statement_list kw_End
-If_block ::= kw_If Expression delimiter Statement_list Else_block kw_End
-If_block ::= kw_If Expression delimiter Statement_list Elseif_block kw_End
+If_block ::= kw_If Expression delimiter Statement_block kw_End
+If_block ::= kw_If Expression delimiter Statement_block Else_block kw_End
+If_block ::= kw_If Expression delimiter Statement_block Elseif_block kw_End
 
-Else_block ::= kw_Else Statement_list
-Elseif_block ::= kw_Elseif Expression delimiter Statement_list
+Else_block ::= kw_Else Statement_block
+Elseif_block ::= kw_Elseif Expression delimiter Statement_block
 
-While_block ::= kw_While Expression delimiter Statement_list kw_End
+While_block ::= kw_While Expression delimiter Statement_block kw_End
 
-For_block ::= kw_For Expression Statement_list kw_End
+For_block ::= kw_For Expression Statement_block kw_End
 
-Function_block ::= Func_Return kw_Function Func_Arg Statement_list kw_End
+Function_block ::= Func_Return kw_Function Func_Arg Statement_block kw_End
 
 Func_Return ::= # TODO
 
 Func_Arg ::= # TODO
 
-Try_block ::= kw_Try Statement_list kw_Catch Opt_Exception_Object Statement_list kw_End
+Try_block ::= kw_Try Statement_block kw_Catch Opt_Exception_Object Statement_block kw_End
 
 Opt_Exception_Object ::= # empty
 Opt_Exception_Object ::= identifier
