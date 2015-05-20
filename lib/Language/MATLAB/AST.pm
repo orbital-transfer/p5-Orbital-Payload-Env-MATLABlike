@@ -218,11 +218,13 @@ Semicolon ~ [;]
 Comma ~ [,]
 Newline ~ [\n]
 
+Opt_Newlines ~ Newline*
+
 identifier ~ [a-zA-Z] id_rest
 id_rest    ~ [_a-zA-Z0-9]*
 
 
-Statement_Sep ~ Semicolon | Comma | Newline
+Statement_Sep ~ Semicolon Opt_Newlines | Comma Opt_Newlines | Newline Opt_Newlines
 
 :discard ~ whitespace
 whitespace ~ [ \t]+
