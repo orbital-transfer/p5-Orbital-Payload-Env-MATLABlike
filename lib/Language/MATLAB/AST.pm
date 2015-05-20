@@ -100,7 +100,7 @@ Expression ::=
 	   Number
 	 | identifier
 	 | Indexing
-	 | Op_lparen Expression Op_rparen assoc => group
+	 | (Op_lparen) Expression (Op_rparen) assoc => group
 	|| Expression Op_mpower Expression   assoc => left
 	 | Expression Op_epower Expression
 	 | Expression Op_transpose
