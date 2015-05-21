@@ -28,6 +28,7 @@ Statement ::=
 	| For_block
 	| Function_block
 	| Try_block
+	| kw_Return
 
 Statement_delim ::= Statement delimiter
 
