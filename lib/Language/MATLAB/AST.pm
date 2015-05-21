@@ -15,6 +15,7 @@ my $grammar = Marpa::R2::Scanless::G->new(
 
 :start ::= Top
 
+:default ::= action => [name, values]
 lexeme default = action => [ name, value ]
 
 Top ::= Statement_block
