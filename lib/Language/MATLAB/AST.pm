@@ -67,6 +67,16 @@ While_block ::= kw_While Expression delimiter Statement_block kw_End
 
 For_block ::= kw_For Expression Statement_block kw_End
 
+# Function_block can contain nested Function_block's (via Statement_block)
+#
+# TODO: need to handle the optional end
+#
+# From <http://www.mathworks.com/help/matlab/ref/function.html>
+# > Files can include multiple local functions or nested functions. Use the end
+# > keyword to indicate the end of each function in a file if:
+# >   - Any function in the file contains a nested function
+# >   - Any local function in the file uses the end keyword
+# > Otherwise, the end keyword is optional.
 Function_block ::= Func_Return kw_Function Func_Arg Statement_block kw_End
 
 Func_Return ::= # TODO
