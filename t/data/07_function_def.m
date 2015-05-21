@@ -1,71 +1,66 @@
 %==
 %-- input
-if a == 1
-	a = 2
+function a
 end
 %-- success
 % 1
 %==
 %-- input
-if a == 1
-	a = 2
-else
-	a = 3
+function a()
 end
 %-- success
 % 1
 %==
 %-- input
-if a == 1
-	a = 2
-	a = 4
-elseif a == 0
-	a = 3
-	a = 6
+function = a
 end
-%-- success
-% 1
-%==
-%-- input
-while a == 1
-	a = 2
-end
-%-- success
-% 1
-%==
-%-- input
-while 0 end
-%-- success
-% 1
-%==
-%-- input
-if 1 end
-%-- success
-% 1
-%==
-%-- input
-if 1 disp('test'); end
-%-- success
-% 1
-%== Must have a delimiter after disp()
-%-- input
-if 1 disp('test') end
 %-- success
 % 0
 %==
 %-- input
-switch 1 otherwise end
+function x = a
+end
 %-- success
 % 1
 %==
 %-- input
-switch 1
-	case 1
-		1
-	case 2
-		2
-	otherwise
-		3
+function [x] = a
+end
+%-- success
+% 1
+%==
+%-- input
+function [x,y] = a
+end
+%-- success
+% 1
+%==
+%-- input
+function [x,y,z] = a
+end
+%-- success
+% 1
+%== Can't have a tilde on output args
+%-- input
+function [x,~,z] = a
+end
+%-- success
+% 0
+%==
+%-- input
+function x = a(b)
+end
+%-- success
+% 1
+%==
+%-- input
+function x = a(b , c)
+end
+%-- success
+% 1
+%==
+%-- input
+function x = a(b , c)
 end
 %-- success
 % 1

@@ -32,6 +32,8 @@ for my $t (@test) {
 	note "running test on @{[$t->{_spec_file}]}";
 	$t->run( sub {
 		my $block = shift;
+		my $file = $block->blocks_object->{_spec_file};
+		my $name = $block->name;
 		my $input = $block->input . "\n"; # ensure a new line at the end
 		my $success =  $block->success == 1 ; # booleanify
 		my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
@@ -43,18 +45,21 @@ for my $t (@test) {
 			#use DDP; p $value;
 			if($success) {
 				if( defined $value_ref ) {
-					pass "< $input > parsed";
+					pass "< $input > parsed: $name";
 				} else {
-					fail "< $input > parsed, but did not generate tree" or diag explain $value;
+					fail "< $input > parsed, but did not generate tree: $name; from $file" or diag explain $value;
 				}
 			} else {
-				fail "< $input > should not have parsed" or diag explain $value;
+				fail "< $input > should not have parsed: $name; from $file" or do {
+					diag explain $value;
+					use DDP; diag p $value;
+				}
 			}
 		} else {
 			if($success) {
-				fail "< $input > should have parsed" or diag explain $value;
+				fail "< $input > should have parsed: $name; from $file" or diag explain $value;
 			} else {
-				pass "< $input > did not parse";
+				pass "< $input > did not parse: $name";
 			}
 		}
 	});

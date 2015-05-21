@@ -22,50 +22,53 @@ Top ::= Statement_block
 
 Statement ::=
 	  Expression
-	| identifier Op_assign Expression  # assignment (NOTE: is not an expression)
+	| Assign_lhs Op_assign Expression  # assignment (NOTE: is not an expression)
 	| If_block
 	| While_block
 	| For_block
+	| Switch_block
 	| Function_block
 	| Try_block
-	| kw_Return
-
-Statement_delim ::= Statement delimiter
+	| Return
+	| Break
+	| Continue
+	| Global_declaration
+	| Persistent_declaration
 
 Statement_block ::=  Statement_delim+
+Statement_delim ::= Statement delimiter
 
 delimiter ::= Statement_Sep+
+Opt_delimiter ::= # empty
+Opt_delimiter ::= delimiter
 
+Break ::= kw_Break
+Continue ::= kw_Continue
+Return ::= kw_Return
 
-Keyword ::=
-	  kw_For
-	| kw_End
-	| kw_If
-	| kw_While
-	| kw_Function
-	| kw_Return
-	| kw_Elseif
-	| kw_Case
-	| kw_Otherwise
-	| kw_Switch
-	| kw_Continue
-	| kw_Else
-	| kw_Try
-	| kw_Catch
-	| kw_Global
-	| kw_Persistent
-	| kw_Break
+Persistent_declaration ::= kw_Persistent Declaration_list
+Global_declaration ::= kw_Global Declaration_list
+Declaration_list ::= identifier
+Declaration_list ::= identifier Declaration_list
 
-If_block ::= kw_If Expression delimiter Statement_block kw_End
-If_block ::= kw_If Expression delimiter Statement_block Else_block kw_End
-If_block ::= kw_If Expression delimiter Statement_block Elseif_block kw_End
+Opt_Statement_block ::= # empty
+Opt_Statement_block ::= Statement_block
 
-Else_block ::= kw_Else Statement_block
-Elseif_block ::= kw_Elseif Expression delimiter Statement_block
+If_block ::= kw_If Expression Opt_delimiter Opt_Statement_block Opt_else kw_End
+Opt_else ::= # empty
+Opt_else ::= kw_Else Opt_delimiter Opt_Statement_block
+Opt_else ::= kw_Elseif Expression Opt_delimiter Opt_Statement_block Opt_else
 
-While_block ::= kw_While Expression delimiter Statement_block kw_End
+While_block ::= kw_While Expression Opt_delimiter Opt_Statement_block kw_End
 
-For_block ::= kw_For Expression Statement_block kw_End
+For_block ::= kw_For identifier Op_assign Expression Opt_delimiter Opt_Statement_block kw_End
+
+Switch_block ::= kw_Switch Expression Opt_delimiter Opt_Cases Opt_Otherwise kw_End
+Opt_Cases ::= # empty
+Opt_Cases ::= Case_block Opt_Cases
+Case_block ::= kw_Case Expression Opt_delimiter Opt_Statement_block
+Opt_Otherwise ::= # empty
+Opt_Otherwise ::= kw_Otherwise Opt_delimiter Opt_Statement_block
 
 # Function_block can contain nested Function_block's (via Statement_block)
 #
@@ -77,34 +80,75 @@ For_block ::= kw_For Expression Statement_block kw_End
 # >   - Any function in the file contains a nested function
 # >   - Any local function in the file uses the end keyword
 # > Otherwise, the end keyword is optional.
-Function_block ::= Func_Return kw_Function Func_Arg Statement_block kw_End
+Function_block ::= kw_Function Func_Output identifier Func_Arg Opt_delimiter Opt_Statement_block kw_End
 
-Func_Return ::= # TODO
+Assign_lhs ::= identifier
+Assign_lhs ::= Op_lsquare Assign_list Op_rsquare
+Assign_item ::= identifier
+Assign_item ::= Op_null_id
+Assign_list ::= Assign_item
+Assign_list ::= Assign_item Op_comma Assign_list
 
-Func_Arg ::= # TODO
+Func_Output ::= # empty
+Func_Output ::=  identifier Op_assign
+Func_Output ::=  Op_lsquare Func_Output_list Op_rsquare Op_assign
+# # empty
+# [ a, b, c ] =
+# a =
+Func_Output_list ::= identifier
+Func_Output_list ::= identifier Op_comma Func_Output_list
 
-Try_block ::= kw_Try Statement_block kw_Catch Opt_Exception_Object Statement_block kw_End
+Func_Arg ::= # empty
+Func_Arg ::= Op_lparen Op_rparen # ()
+Func_Arg ::= Op_lparen Assign_list Op_rparen
+# (a)
+# (a, b)
+# (varargin)
 
+# TODO
+# command form for function calls:
+# e.g.,
+# disp   example output % same as: disp('example', 'output')
+
+Try_block ::= kw_Try Opt_Statement_block kw_Catch Opt_Exception_Object Opt_Statement_block kw_End
 Opt_Exception_Object ::= # empty
 Opt_Exception_Object ::= identifier
 
+## Keywords
 kw_For        ~ 'for'
+:lexeme ~ <kw_For> priority => 1
 kw_End        ~ 'end'
+:lexeme ~ <kw_End> priority => 1
 kw_If         ~ 'if'
+:lexeme ~ <kw_If> priority => 1
 kw_While      ~ 'while'
+:lexeme ~ <kw_While> priority => 1
 kw_Function   ~ 'function'
+:lexeme ~ <kw_Function> priority => 1
 kw_Return     ~ 'return'
+:lexeme ~ <kw_Return> priority => 1
 kw_Elseif     ~ 'elseif'
+:lexeme ~ <kw_Elseif> priority => 1
 kw_Case       ~ 'case'
+:lexeme ~ <kw_Case> priority => 1
 kw_Otherwise  ~ 'otherwise'
+:lexeme ~ <kw_Otherwise> priority => 1
 kw_Switch     ~ 'switch'
+:lexeme ~ <kw_Switch> priority => 1
 kw_Continue   ~ 'continue'
+:lexeme ~ <kw_Continue> priority => 1
 kw_Else       ~ 'else'
+:lexeme ~ <kw_Else> priority => 1
 kw_Try        ~ 'try'
+:lexeme ~ <kw_Try> priority => 1
 kw_Catch      ~ 'catch'
+:lexeme ~ <kw_Catch> priority => 1
 kw_Global     ~ 'global'
+:lexeme ~ <kw_Global> priority => 1
 kw_Persistent ~ 'persistent'
+:lexeme ~ <kw_Persistent> priority => 1
 kw_Break      ~ 'break'
+:lexeme ~ <kw_Break> priority => 1
 
 
 # precedence from <http://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html>
@@ -112,6 +156,7 @@ Expression ::=
 	   Number
 	 | identifier
 	 | Indexing
+	 | String
 	 | (Op_lparen) Expression (Op_rparen) assoc => group
 	|| Expression Op_mpower Expression   assoc => left
 	 | Expression Op_epower Expression
@@ -150,9 +195,8 @@ Indexing_Expression ::=
 
 Indexing_Expression_with_comma_sep ::=
 	  Indexing_Expression
-	| Indexing_Expression Op_Comma Indexing_Expression_with_comma_sep
+	| Indexing_Expression Op_comma Indexing_Expression_with_comma_sep
 
-Op_Comma ::= [,]
 
 Op_lparen ~ [(]
 Op_rparen ~ [)]
@@ -185,8 +229,15 @@ Op_sand ~ [&][&]
 Op_sor ~ [|][|]
 
 Op_not ~ [~]
+Op_null_id ~ [~]
 
 Op_assign ~ [=]
+
+Op_comma ~ [,]
+Op_lsquare ~ '['
+Op_rsquare ~ ']'
+
+Op_string_delim ~ [']
 
 Unary_Sign ~ [+-]
 
@@ -194,6 +245,12 @@ Unary_Sign ~ [+-]
 #Optional_Unary_Sign ~ # empty
 
 Number ~ RealNumber | ImaginaryNumber
+
+String_Unit ~ [^']
+String_Unit ~ [']['] # two single quotes next to each other
+String_Units ~ # empty
+String_Units ~ String_Unit String_Units
+String ~ Op_string_delim String_Units Op_string_delim
 
 RealNumber ~ Integer | Float
 
@@ -232,6 +289,7 @@ Newline ~ [\n]
 
 Opt_Newlines ~ Newline*
 
+:lexeme ~ <identifier>   priority => -1
 identifier ~ [a-zA-Z] id_rest
 id_rest    ~ [_a-zA-Z0-9]*
 
