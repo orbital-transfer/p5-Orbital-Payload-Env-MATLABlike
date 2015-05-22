@@ -43,3 +43,28 @@ x = f(a,b,c)
 x = f(a,~,c)
 %-- success
 % 0
+%==
+%-- input
+x, y = f(a,c)
+%-- success
+% 1
+%== Must be in [ ]
+%-- input
+x y = f(a,c)
+%-- success
+% 0
+%==
+%-- input
+[x y] = f(a,c)
+%-- success
+% 1
+%==
+%-- input
+[x y, z] = f(a,c)
+%-- success
+% 1
+%==
+%-- input
+[x y, z] = f(a c)
+%-- success
+% 0

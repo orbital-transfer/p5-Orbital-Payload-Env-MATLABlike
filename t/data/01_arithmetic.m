@@ -130,9 +130,7 @@ a == b
 a == >= b
 %-- success
 % 0
-%==
-%-- comment
-% no such operator
+%== .+: no such operator
 %-- input
 a .+ b
 %-- success

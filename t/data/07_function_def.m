@@ -64,3 +64,15 @@ function x = a(b , c)
 end
 %-- success
 % 1
+%== Comma is optional in output
+%-- input
+function [x y] = a
+end
+%-- success
+% 1
+%== Comma is optional in output
+%-- input
+function [x, y z] = a
+end
+%-- success
+% 1
