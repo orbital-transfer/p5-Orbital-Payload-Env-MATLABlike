@@ -39,6 +39,7 @@ Script_file ::= Statement_block
 Statement ::=
 	  Expression
 	| Assign_lhs Op_assign Expression  # assignment (NOTE: is not an expression)
+	| Command
 	| If_block
 	| While_block
 	| For_block
@@ -134,13 +135,16 @@ Func_Arg ::= Op_lparen Func_Arg_list Op_rparen
 
 # TODO
 # command form for function calls:
+# See "Two ways to call MATLAB functions" <http://www.mathworks.com/help/matlab/ref/syntax.html>.
 # e.g.,
 # disp   example output % same as: disp('example', 'output')
-#Command ::= identifier Command_Arg_First Command_Args
-#Command_Arg_First  ::= [^;,=]+ # TODO probably wrong
-#Command_Arg_Rest  ::= [^;,]+   # TODO probably wrong
-#Command_Args ::= # empty
-#Command_Args ::= Command_Arg_Rest Command_Args
+Command ::= identifier Command_Arg_First Command_Args
+Command_Arg_First ::= identifier # not complete
+#Command_Arg_First  ::= [^;,= ]+ # TODO probably wrong
+Command_Arg_Rest ::= identifier
+#Command_Arg_Rest  ::= [^;, ]+   # TODO probably wrong
+Command_Args ::= # empty
+Command_Args ::= Command_Arg_Rest Command_Args
 
 Try_block ::= kw_Try Opt_delimiter Opt_Statement_block kw_Catch Opt_Exception_Object Opt_delimiter Opt_Statement_block kw_End
 Opt_Exception_Object ::= # empty
@@ -190,7 +194,6 @@ Expression ::=
 	 | identifier
 	 | Matrix
 	 | Indexing
-#	 | Command
 	 | String
 	 | (Op_lparen) Expression (Op_rparen) assoc => group
 	 | Struct_Field_Access
