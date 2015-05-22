@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use v5.12;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Path::Tiny;
+use Language::MATLAB::AST;
+
+my $grammar = Language::MATLAB::AST->grammar;
+
+my $input = path($ARGV[0])->slurp_utf8;
+$input =~ s/%.*$//mg; # remove comments (TODO does not account for strings)
+$input =~ s/\.\.\.\s*\n//sg; # remove comments (TODO does not account for strings)
+my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar, trace_terminals => 1 } );
+
+unless( not defined eval { $recce->read( \$input ); 1 } ) {
+	my $value_ref = $recce->value;
+	use DDP; p $value_ref;
+} else {
+	say "Parse failed";
+	my $progress_report = $recce->show_progress( 0, -1 );
+	use DDP; p $progress_report;
+}
