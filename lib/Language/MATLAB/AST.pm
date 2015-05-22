@@ -18,7 +18,23 @@ my $grammar = Marpa::R2::Scanless::G->new(
 :default ::= action => [name, values]
 lexeme default = action => [ name, value ]
 
-Top ::= Statement_block
+Top ::=
+	  Script_file
+	| Function_file
+
+Function_file ::=
+	  Function_blocks_all_with_end
+	| Function_blocks_no_ends
+
+# TODO what's the difference between a nested and local function?
+Function_block_with_end ::= Function_block kw_End Opt_delimiter
+Function_blocks_all_with_end ::= Function_block_with_end
+Function_blocks_all_with_end ::= Function_block_with_end Function_blocks_all_with_end
+
+Function_blocks_no_ends ::= Function_block Opt_delimiter
+Function_blocks_no_ends ::= Function_block Function_blocks_no_ends
+
+Script_file ::= Statement_block
 
 Statement ::=
 	  Expression
@@ -27,7 +43,6 @@ Statement ::=
 	| While_block
 	| For_block
 	| Switch_block
-	| Function_block
 	| Try_block
 	| Return
 	| Break
@@ -80,14 +95,21 @@ Opt_Otherwise ::= kw_Otherwise Opt_delimiter Opt_Statement_block
 # >   - Any function in the file contains a nested function
 # >   - Any local function in the file uses the end keyword
 # > Otherwise, the end keyword is optional.
-Function_block ::= kw_Function Func_Output identifier Func_Arg Opt_delimiter Opt_Statement_block kw_End
+Function_block ::= kw_Function Func_Output identifier Func_Arg Opt_delimiter Opt_Statement_block
 
-Assign_lhs ::= identifier
-Assign_lhs ::= Op_lsquare Assign_list Op_rsquare
-Assign_item ::= identifier
-Assign_item ::= Op_null_id
-Assign_list ::= Assign_item
-Assign_list ::= Assign_item Op_comma Assign_list
+Assign_lhs ::= Assign_item_no_sq
+Assign_lhs ::= Op_lsquare Assign_list_opt_comma Op_rsquare
+Assign_lhs ::= Assign_list_req_comma
+Assign_item_no_sq ::= identifier
+Assign_item_no_sq ::= Struct_Field_Access
+Assign_item_in_sq ::=
+	  Assign_item_no_sq
+	| Op_null_id #  must be in a [ ]
+Assign_list_opt_comma ::= Assign_item_in_sq
+Assign_list_opt_comma ::= Assign_item_in_sq Op_comma Assign_list_opt_comma
+Assign_list_opt_comma ::= Assign_item_in_sq Assign_list_opt_comma
+Assign_list_req_comma ::= Assign_item_no_sq
+Assign_list_req_comma ::= Assign_item_no_sq Op_comma Assign_list_req_comma
 
 Func_Output ::= # empty
 Func_Output ::=  identifier Op_assign
@@ -97,10 +119,15 @@ Func_Output ::=  Op_lsquare Func_Output_list Op_rsquare Op_assign
 # a =
 Func_Output_list ::= identifier
 Func_Output_list ::= identifier Op_comma Func_Output_list
+Func_Output_list ::= identifier Func_Output_list
 
+Func_Arg_item ::= identifier
+Func_Arg_item ::= Op_null_id
+Func_Arg_list ::= Func_Arg_item
+Func_Arg_list ::= Func_Arg_item Op_comma Func_Arg_list
 Func_Arg ::= # empty
 Func_Arg ::= Op_lparen Op_rparen # ()
-Func_Arg ::= Op_lparen Assign_list Op_rparen
+Func_Arg ::= Op_lparen Func_Arg_list Op_rparen
 # (a)
 # (a, b)
 # (varargin)
@@ -109,8 +136,13 @@ Func_Arg ::= Op_lparen Assign_list Op_rparen
 # command form for function calls:
 # e.g.,
 # disp   example output % same as: disp('example', 'output')
+#Command ::= identifier Command_Arg_First Command_Args
+#Command_Arg_First  ::= [^;,=]+ # TODO probably wrong
+#Command_Arg_Rest  ::= [^;,]+   # TODO probably wrong
+#Command_Args ::= # empty
+#Command_Args ::= Command_Arg_Rest Command_Args
 
-Try_block ::= kw_Try Opt_Statement_block kw_Catch Opt_Exception_Object Opt_Statement_block kw_End
+Try_block ::= kw_Try Opt_delimiter Opt_Statement_block kw_Catch Opt_Exception_Object Opt_delimiter Opt_Statement_block kw_End
 Opt_Exception_Object ::= # empty
 Opt_Exception_Object ::= identifier
 
@@ -150,20 +182,24 @@ kw_Persistent ~ 'persistent'
 kw_Break      ~ 'break'
 :lexeme ~ <kw_Break> priority => 1
 
+Struct_Field_Access ::= Expression Op_struct_field_access identifier # TODO check this
 
 # precedence from <http://www.mathworks.com/help/matlab/matlab_prog/operator-precedence.html>
 Expression ::=
 	   Number
 	 | identifier
+	 | Matrix
 	 | Indexing
+#	 | Command
 	 | String
 	 | (Op_lparen) Expression (Op_rparen) assoc => group
+	 | Struct_Field_Access
 	|| Expression Op_mpower Expression   assoc => left
 	 | Expression Op_epower Expression
 	 | Expression Op_transpose
 	 | Expression Op_ctranspose
-	|| Op_not Number
-	 | Unary_Sign Number
+	|| Op_not Expression
+	 | Unary_Sign Expression
 	|| Expression Op_mmult Expression    assoc => left
 	 | Expression Op_emult Expression
 	 | Expression Op_mdiv Expression
@@ -185,18 +221,28 @@ Expression ::=
 	|| Expression Op_sand Expression
 	|| Expression Op_sor Expression
 
+# TODO this is more complicated
+Matrix ::= Op_lsquare Op_rsquare
+Matrix ::= Op_lsquare Expression_space Op_rsquare
+Expression_space ::= Expression
+Expression_space ::= Expression Expression_space
+
 # indexing and function calls are the same at parse-time
 Indexing ::=
-	identifier Op_lparen Indexing_Expression_with_comma_sep Op_rparen
+	identifier Op_lparen Opt_Indexing_Expression_with_comma_sep Op_rparen
 
 Indexing_Expression ::=
 	  Expression
 	| Op_colon
 
+Opt_Indexing_Expression_with_comma_sep ::= # empty
+Opt_Indexing_Expression_with_comma_sep ::= Indexing_Expression_with_comma_sep
 Indexing_Expression_with_comma_sep ::=
 	  Indexing_Expression
 	| Indexing_Expression Op_comma Indexing_Expression_with_comma_sep
 
+
+#Op_ellipsis ~ '...' # TODO line continuation
 
 Op_lparen ~ [(]
 Op_rparen ~ [)]
@@ -238,6 +284,8 @@ Op_lsquare ~ '['
 Op_rsquare ~ ']'
 
 Op_string_delim ~ [']
+
+Op_struct_field_access ~ [.]
 
 Unary_Sign ~ [+-]
 
