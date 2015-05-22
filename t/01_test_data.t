@@ -36,7 +36,13 @@ for my $t (@test) {
 		my $name = $block->name;
 		my $input = $block->input . "\n"; # ensure a new line at the end
 		my $success =  $block->success == 1 ; # booleanify
-		my $recce = Marpa::R2::Scanless::R->new( { grammar => $grammar } );
+		my $trace_string;
+		open(my $trace_fh, '>', \$trace_string);
+		my $recce = Marpa::R2::Scanless::R->new( {
+			grammar => $grammar,
+			trace_terminals => 1,
+			trace_file_handle => $trace_fh } );
+		$trace_string = "";
 		my ($value, $value_ref);
 		unless( not defined eval { $recce->read( \$input ); 1 } ) {
 			# parse successful
@@ -52,12 +58,18 @@ for my $t (@test) {
 			} else {
 				fail "< $input > should not have parsed: $name; from $file" or do {
 					diag explain $value;
-					use DDP; diag p $value;
+					#use DDP; diag p $value;
 				}
 			}
 		} else {
 			if($success) {
-				fail "< $input > should have parsed: $name; from $file" or diag explain $value;
+				fail "< $input > should have parsed: $name; from $file"
+					or do {
+						diag explain $value;
+						diag $trace_string;
+						#my $progress_report = $recce->show_progress( 0, -1 );
+						#diag explain $progress_report;
+					}
 			} else {
 				pass "< $input > did not parse: $name";
 			}
