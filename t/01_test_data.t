@@ -34,6 +34,7 @@ for my $t (@test) {
 		my $block = shift;
 		my $file = $block->blocks_object->{_spec_file};
 		my $name = $block->name;
+		my $num = $block->{seq_num};
 		my $input = $block->input . "\n"; # ensure a new line at the end
 		my $success =  $block->success == 1 ; # booleanify
 		my $trace_string;
@@ -42,6 +43,7 @@ for my $t (@test) {
 			grammar => $grammar,
 			trace_terminals => 1,
 			trace_file_handle => $trace_fh } );
+		note "$file : $num";
 		$trace_string = "";
 		my ($value, $value_ref);
 		unless( not defined eval { $recce->read( \$input ); 1 } ) {
