@@ -69,3 +69,18 @@ switch 1
 end
 %-- success
 % 1
+%==
+%-- input
+try
+catch
+end
+%-- success
+% 1
+%-- input
+try
+	1 + 1
+catch ex
+	2
+end
+%-- success
+% 1
