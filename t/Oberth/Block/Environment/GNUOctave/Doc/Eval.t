@@ -21,7 +21,7 @@ subtest 'lookup Octave documentation' => sub {
 
 	my $doc_apo_escape = $doc_eval->retrieve(".'");
 	like $doc_apo_escape,
-		qr/Matrix transpose operator.*_not_ the complex conjugate transpose/s,
+		qr/Matrix transpose operator.*_not_\s+the\s+complex\s+conjugate.*transpose/s,
 		"correct documentation for the .' matrix transpose operator: escaped quote properly";
 };
 
