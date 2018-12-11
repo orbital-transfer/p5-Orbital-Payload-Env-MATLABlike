@@ -1,11 +1,11 @@
 #!/usr/bin/env perl
 
-use Oberth::Common::Setup;
-use Oberth::Service::GNUOctave::Container;
+use Oberth::Manoeuvre::Common::Setup;
+use Oberth::Block::Environment::GNUOctave::Container;
 use Test::Most;
 
 my $doc_eval = try {
-	Oberth::Service::GNUOctave::Container->new->doc_eval
+	Oberth::Block::Environment::GNUOctave::Container->new->doc_eval
 } catch {
 	plan skip_all => "$_";
 };
@@ -13,7 +13,7 @@ my $doc_eval = try {
 plan tests => 2;
 
 subtest 'lookup Octave documentation' => sub {
-	my $doc_eval = Oberth::Service::GNUOctave::Container->new->doc_eval;
+	my $doc_eval = Oberth::Block::Environment::GNUOctave::Container->new->doc_eval;
 	my $doc = $doc_eval->retrieve('sum');
 	like $doc,
 		qr/Sum of elements along dimension DIM/,
@@ -27,10 +27,10 @@ subtest 'lookup Octave documentation' => sub {
 
 
 subtest "errors in Octave documentation lookup" => sub {
-	my $doc_eval = Oberth::Service::GNUOctave::Container->new->doc_eval;
+	my $doc_eval = Oberth::Block::Environment::GNUOctave::Container->new->doc_eval;
 	throws_ok
 		{ my $doc = $doc_eval->retrieve('not_an_octave_function'); }
-		'Oberth::Common::Error::Retrieval::NotFound',
+		'Oberth::Manoeuvre::Common::Error::Retrieval::NotFound',
 		"no doc for 'not_an_octave_function'";
 };
 
