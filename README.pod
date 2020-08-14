@@ -4,7 +4,7 @@
 
 =head1 NAME
 
-Oberth::Service::GNUOctave::Doc::Eval - Retrieves documentation via Octave command line
+Orbital::Service::GNUOctave::Doc::Eval - Retrieves documentation via Octave command line
 
 =head1 VERSION
 

@@ -1,9 +1,9 @@
-use Oberth::Manoeuvre::Common::Setup;
-package Oberth::Block::Environment::GNUOctave::Interpreter;
+use Orbital::Transfer::Common::Setup;
+package Orbital::Payload::Environment::GNUOctave::Interpreter;
 # ABSTRACT: A representation of an Octave interpreter
 
 use Moo;
-use Oberth::Manoeuvre::Common::Types qw(Tuple Str Int);
+use Orbital::Transfer::Common::Types qw(Tuple Str Int);
 
 use File::Which;
 use Capture::Tiny qw(capture);
@@ -12,7 +12,7 @@ has octave_path => (
 	is => 'ro',
 	default => method() {
 		which('octave')
-			or Oberth::Manoeuvre::Common::Error::Service::NotAvailable
+			or Orbital::Transfer::Common::Error::Service::NotAvailable
 				->throw('octave is not in the PATH');
 	},
 );
