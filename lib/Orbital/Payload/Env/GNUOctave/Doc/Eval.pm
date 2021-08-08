@@ -1,5 +1,5 @@
 use Orbital::Transfer::Common::Setup;
-package Orbital::Payload::Environment::GNUOctave::Doc::Eval;
+package Orbital::Payload::Env::GNUOctave::Doc::Eval;
 # ABSTRACT: Retrieves documentation via Octave command line
 
 use Moo;
@@ -7,7 +7,7 @@ use Orbital::Transfer::Common::Types qw(InstanceOf Str);
 
 has octave_interpreter => (
 	is => 'ro',
-	isa => InstanceOf['Orbital::Payload::Environment::GNUOctave::Interpreter'],
+	isa => InstanceOf['Orbital::Payload::Env::GNUOctave::Interpreter'],
 	required => 1,
 );
 

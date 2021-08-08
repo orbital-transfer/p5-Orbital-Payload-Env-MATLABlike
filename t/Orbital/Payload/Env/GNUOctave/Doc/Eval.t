@@ -1,11 +1,11 @@
 #!/usr/bin/env perl
 
 use Orbital::Transfer::Common::Setup;
-use Orbital::Payload::Environment::GNUOctave::Container;
+use Orbital::Payload::Env::GNUOctave::Container;
 use Test::Most;
 
 my $doc_eval = try {
-	Orbital::Payload::Environment::GNUOctave::Container->new->doc_eval
+	Orbital::Payload::Env::GNUOctave::Container->new->doc_eval
 } catch {
 	plan skip_all => "$_";
 };
@@ -13,7 +13,7 @@ my $doc_eval = try {
 plan tests => 2;
 
 subtest 'lookup Octave documentation' => sub {
-	my $doc_eval = Orbital::Payload::Environment::GNUOctave::Container->new->doc_eval;
+	my $doc_eval = Orbital::Payload::Env::GNUOctave::Container->new->doc_eval;
 	my $doc = $doc_eval->retrieve('sum');
 	like $doc,
 		qr/Sum of elements along dimension DIM/,
@@ -27,7 +27,7 @@ subtest 'lookup Octave documentation' => sub {
 
 
 subtest "errors in Octave documentation lookup" => sub {
-	my $doc_eval = Orbital::Payload::Environment::GNUOctave::Container->new->doc_eval;
+	my $doc_eval = Orbital::Payload::Env::GNUOctave::Container->new->doc_eval;
 	throws_ok
 		{ my $doc = $doc_eval->retrieve('not_an_octave_function'); }
 		'Orbital::Transfer::Common::Error::Retrieval::NotFound',

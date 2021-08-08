@@ -1,5 +1,5 @@
 use Orbital::Transfer::Common::Setup;
-package Orbital::Payload::Environment::GNUOctave::Interpreter;
+package Orbital::Payload::Env::GNUOctave::Interpreter;
 # ABSTRACT: A representation of an Octave interpreter
 
 use Moo;
