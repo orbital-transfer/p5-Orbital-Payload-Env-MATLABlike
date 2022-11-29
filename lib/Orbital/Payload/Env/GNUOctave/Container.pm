@@ -2,6 +2,7 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::Payload::Env::GNUOctave::Container;
 # ABSTRACT: A container for the GNU Octave service
 
+use Orbital::Transfer::Common::Setup;
 use Moose;
 use Bread::Board::Declare;
 

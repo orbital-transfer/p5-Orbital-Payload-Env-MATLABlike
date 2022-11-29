@@ -2,6 +2,7 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::Payload::Env::GNUOctave::Interpreter;
 # ABSTRACT: A representation of an Octave interpreter
 
+use Orbital::Transfer::Common::Setup;
 use Moo;
 use Orbital::Transfer::Common::Types qw(Tuple Str Int);
 

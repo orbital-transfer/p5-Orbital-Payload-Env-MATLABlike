@@ -2,6 +2,7 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::Payload::Env::GNUOctave::Doc::Eval;
 # ABSTRACT: Retrieves documentation via Octave command line
 
+use Orbital::Transfer::Common::Setup;
 use Moo;
 use Orbital::Transfer::Common::Types qw(InstanceOf Str);
 
