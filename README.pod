@@ -4,7 +4,7 @@
 
 =head1 NAME
 
-Orbital::Service::GNUOctave::Doc::Eval - Retrieves documentation via Octave command line
+Orbital::Payload::Env::GNUOctave::Doc::Eval - Retrieves documentation via Octave command line
 
 =head1 VERSION
 
