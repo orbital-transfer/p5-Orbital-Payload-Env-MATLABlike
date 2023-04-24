@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# PODNAME: matlab-ast-dump
 
 use strict;
 use warnings;
