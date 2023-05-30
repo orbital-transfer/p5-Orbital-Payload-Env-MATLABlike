@@ -8,7 +8,7 @@ Language::MATLAB::AST - Grammar for the MATLAB language.
 
 =head1 VERSION
 
-version 0.001
+version 0.001000
 
 =head1 SYNOPSIS
 
