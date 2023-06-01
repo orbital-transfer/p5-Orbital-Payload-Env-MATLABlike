@@ -2,7 +2,7 @@ use Test::Most;
 use Test::Base;
 use Path::Class;
 use Path::Iterator::Rule;
-use List::AllUtils qw(sum);
+use List::Util::MaybeXS qw(sum);
 use strict;
 
 use Language::MATLAB::AST;
